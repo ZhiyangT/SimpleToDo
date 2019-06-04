@@ -12,6 +12,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -41,12 +42,15 @@ public class MainActivity extends AppCompatActivity {
         alTask = new ArrayList<>();
         aaTask = new ArrayAdapter(this, android.R.layout.simple_list_item_1, alTask);
 
+        //Sorting ArrayList in alphabetical order
+        //Collections.sort(alTask);
+
         lv.setAdapter(aaTask);
 
         spn.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                switch (position){
+                switch (position) {
                     case 0:
                         etTask.setHint("Type in a new task here");
                         btnDel.setEnabled(false);
@@ -73,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 alTask.add(etTask.getText().toString());
+                etTask.setText("");
                 aaTask.notifyDataSetChanged();
             }
         });
@@ -81,15 +86,20 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 int index = Integer.parseInt(etTask.getText().toString());
-                if(alTask.size()>=1){
+                //check if array have available entry to delete
+                if (alTask.size() >= 1) {
+
+                    //check if position is valid
                     try {
                         alTask.remove(index);
-                    } catch (IndexOutOfBoundsException e) {
+                    }
+                    catch (IndexOutOfBoundsException e) {
                         Toast.makeText(MainActivity.this, "Wrong index number", Toast.LENGTH_SHORT).show();
                     }
+
+                    etTask.setText("");
                     aaTask.notifyDataSetChanged();
-                }
-                else{
+                } else {
                     Toast.makeText(MainActivity.this, "You don't have any task to remove", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -100,6 +110,16 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 alTask.clear();
                 etTask.setText("");
+                aaTask.notifyDataSetChanged();
+            }
+        });
+
+
+        //click to delete
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                alTask.remove(position);
                 aaTask.notifyDataSetChanged();
             }
         });
